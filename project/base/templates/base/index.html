@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block title %}Wikipedia Searcher{% endblock title %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 py-8">
+    <h1 class="text-4xl font-bold text-center text-gray-800 mb-8">Wikipedia Searcher</h1>
+
+    <form id="search_form" method="post" class="flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-4 shadow-lg rounded-xl overflow-hidden bg-gray-100 p-6 mb-8">
+        {% csrf_token %}
+        <input type="text" id="search_input" name="search_input" placeholder="Cari sesuatu..." value="{{ request.POST.search_input }}" class="w-full md:w-3/4 p-3 border border-gray-300 rounded-md shadow-sm text-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+        <button type="submit" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 transition w-full md:w-auto">Cari</button>
+    </form>
+
+    {% if error %}
+        <p class="text-red-500 text-center mb-4 text-lg">{{ error }}</p>
+    {% endif %}
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {% if hasil %}
+            <div class="bg-gray-50 rounded-lg p-6 shadow-md">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">Hasil:</h2>
+                <p class="text-lg text-gray-700 whitespace-pre-wrap text-justify">{{ hasil }}</p>
+            </div>
+        {% endif %}
+
+        {% if mirip %}
+            <div class="bg-gray-50 rounded-lg p-6 shadow-md">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4">Topik Terkait:</h3>
+                <ul class="space-y-3">
+                    {% for topic in mirip %}
+                        <li>
+                            <a href="javascript:void(0)" onclick="isiInput('{{ topic }}')" class="text-blue-600 hover:text-blue-800 text-lg font-medium transition duration-300 ease-in-out">{{ topic }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+    function isiInput(value) {
+        document.getElementById('search_input').value = value;
+        document.getElementById('search_form').submit();
+    }
+</script>
+{% endblock content %}
